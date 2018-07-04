@@ -11,12 +11,14 @@ module Rdkafka
     # @private
     def initialize(native_kafka)
       @native_kafka = native_kafka
+      @consuming = false
     end
 
     # Close this consumer
     # @return [nil]
     def close
       Rdkafka::Bindings.rd_kafka_consumer_close(@native_kafka)
+      @consuming = false
     end
 
     # Subscribe to one or more topics letting Kafka handle partition assignments.
@@ -242,6 +244,7 @@ module Rdkafka
     # @return [nil]
     def each(&block)
       loop do
+        break unless @consuming
         message = poll(250)
         if message
           block.call(message)
