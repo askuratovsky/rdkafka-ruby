@@ -243,6 +243,7 @@ module Rdkafka
     #
     # @return [nil]
     def each(&block)
+      @consuming = true
       loop do
         break unless @consuming
         message = poll(250)
